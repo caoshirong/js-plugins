@@ -15,8 +15,8 @@ input, textarea {
   width: 400px;
   box-sizing: border-box;
   position: relative; }
-  .select-container * {
-    box-sizing: border-box; }
+.select-container * {
+  box-sizing: border-box; }
 
 .select-input {
   width: 100%;
@@ -40,24 +40,24 @@ input, textarea {
 
 .selector-search {
   padding: 10px; }
-  .selector-search .selector-search-input {
-    width: 100%;
-    height: 32px;
-    line-height: 32px;
-    padding: 0 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px; }
+.selector-search .selector-search-input {
+  width: 100%;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px; }
 
 .selector-list {
   width: 100%; }
-  .selector-list .selector-list-item {
-    padding: 12px;
-    cursor: pointer; }
-    .selector-list .selector-list-item:hover, .selector-list .selector-list-item.active {
-      background: #00c286;
-      color: #fff; }
-  .selector-list .no-result {
-    padding: 12px;
-    color: #ddd; }
+.selector-list .selector-list-item {
+  padding: 12px;
+  cursor: pointer; }
+.selector-list .selector-list-item:hover, .selector-list .selector-list-item.active {
+  background: #00c286;
+  color: #fff; }
+.selector-list .no-result {
+  padding: 12px;
+  color: #ddd; }
 
 /*# sourceMappingURL=index.css.map */
