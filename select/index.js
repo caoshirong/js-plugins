@@ -84,6 +84,7 @@
             this.$input.type = 'text';
             this.$input.placeholder = '请选择';
             this.$input.className = 'select-input';
+            this.$input.setAttribute('readonly', true);
             this.$input.onclick = function(ev) {
                 __this._operateList(ev);
             }
@@ -91,6 +92,7 @@
             this._setDefault();
         },
         _initSearchInput: function() { // 支持搜索
+            var __this = this;
             this.$search = document.createElement('div');
             this.$search.className = 'selector-search';
             this.$searchInput = document.createElement('input');
@@ -100,7 +102,22 @@
             }
             this.$searchInput.oninput = function (ev) {
                 var val = ev.currentTarget.value;
-                console.log(val);
+                var arr = [];
+                var __html = '';
+                for(var i = 0; i < __this.list.length; i += 1) {
+                    if (__this.list[i].value.indexOf(val) !== -1) { // 模糊匹配数据
+                        arr.push(__this.list[i]);
+                    }
+                }
+                if (arr.length > 0 ) {
+                    for (var i = 0; i < arr.length; i += 1) {
+                        __html += '<li data-key="'+ arr[i].key +'" data-value="'+ arr[i].value +'"  class="selector-list-item">'+ arr[i].value +'</li>';
+                    }
+                } else {
+                    __html = '<p class="no-result">暂无数据</p>';
+                }
+                __this.$list.innerHTML = __html;
+                __this._initStyle(__this.selectItem ? __this.selectItem.key : __this.defaultsText);
             }
             this.$search.appendChild(this.$searchInput)
             this.$containerList.appendChild(this.$search);
@@ -153,9 +170,10 @@
                 __value = __data.value;
             this.$input.value = __value;
             this.$input.setAttribute('key', __key);
+            this.selectItem = {key: __key, value: __value};
             this._initStyle(__key);
             if (this.callback) {
-                this.callback({key: __key, value: __value});
+                this.callback(this.selectItem);
             }
         },
         _initStyle: function(key) { // 设置样式

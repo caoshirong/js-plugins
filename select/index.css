@@ -56,5 +56,8 @@ input, textarea {
     .selector-list .selector-list-item:hover, .selector-list .selector-list-item.active {
       background: #00c286;
       color: #fff; }
+  .selector-list .no-result {
+    padding: 12px;
+    color: #ddd; }
 
 /*# sourceMappingURL=index.css.map */
