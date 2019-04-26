@@ -6,6 +6,7 @@
  * new Selector({defaultsText: '2', list: [{key: key, value: value}],search: true, callback: function(item) {
                     console.log(item);
                 }});
+ * 未实现键盘事件
  */
 
  ;(function(undefined) {
@@ -71,15 +72,27 @@
             var opt = extend(defaults, options, true);
             this.container = document.getElementById(opt.container);
             this.defaultsText = opt.defaultsText;
-            this.list = opt.list;
+            this.list = [].concat(opt.list);
             this.showFlag = false; // 是否显示下拉框的标志
             this.callback = opt.callback;
             this.search = opt.search;
-            this._initInput();
-            this._initList();
+            this.filterList = [].concat(opt.list);
+            this._initInput()._initList();
             document.addEventListener('click', function() {
                 __this._hideList();
             }, false)
+            this.container.onkeyup = function(ev) {
+                var e = ev || window.event;
+                var key = e.keyCode || e.which;
+                if (key === '38') { // 向上
+                    console.log('向上');
+                }
+                if (key === '40') {
+                    console.log('向下');
+                }
+                __this._initStyle()
+            }
+            return this;
         },
         _initInput: function() { // 生成input框
             var __this = this;
@@ -93,6 +106,7 @@
             }
             this.container.appendChild(this.$input);
             this._setDefault();
+            return this;
         },
         _initSearchInput: function() { // 支持搜索
             var __this = this;
@@ -101,10 +115,12 @@
             this.$searchInput = document.createElement('input');
             this.$searchInput.className = 'selector-search-input';
             this.$search.onclick = function(ev) {
-                ev.stopPropagation();
+                var e = ev || window.event;
+                e.stopPropagation();
             }
             this.$searchInput.oninput = function (ev) {
-                var val = ev.currentTarget.value;
+                var e = ev || window.event;
+                var val = e.currentTarget.value;
                 var arr = [];
                 var __html = '';
                 for(var i = 0; i < __this.list.length; i += 1) {
@@ -112,6 +128,7 @@
                         arr.push(__this.list[i]);
                     }
                 }
+                __this.filterList = arr;
                 if (arr.length > 0 ) {
                     for (var i = 0; i < arr.length; i += 1) {
                         __html += '<li data-key="'+ arr[i].key +'" data-value="'+ arr[i].value +'"  class="selector-list-item">'+ arr[i].value +'</li>';
@@ -124,16 +141,19 @@
             }
             this.$search.appendChild(this.$searchInput)
             this.$containerList.appendChild(this.$search);
+            return this;
         },
         _setDefault: function() { // 赋默认值
             var __item = {};
             for(var i = 0; i < this.list.length; i += 1) {
                 if (this.list[i].key === this.defaultsText) {
                     __item = this.list[i];
+                    this.index = i;
                 }
             }
             this.$input.setAttribute('data-key', this.defaultsText)
             this.$input.value = __item.value;
+            return this;
         },
         _initList: function() { // 生成下拉列表
             var __this = this;
@@ -142,7 +162,7 @@
             this.$containerList.className = 'selector-container';
             this.$list = document.createElement('ul');
             this.$list.className = 'selector-list';
-            for (var i = 0; i < this.list.length; i += 1) {
+            for (var i = 0; i < this.filterList.length; i += 1) {
                 __html += '<li data-key="'+ this.list[i].key +'" data-value="'+ this.list[i].value +'"  class="selector-list-item">'+ this.list[i].value +'</li>';
             }
             this.$list.innerHTML = __html;
@@ -157,11 +177,13 @@
             this.$containerList.appendChild(this.$list)
             this.container.appendChild(this.$containerList);
             this._initStyle(this.defaultsText);
+            return this;
         },
         _operateList: function(ev) { // 是否显示下拉框
+            var e = ev || window.event;
             this.$containerList.style.display = this.showFlag ? 'none' : 'block';
             this.showFlag = !this.showFlag;
-            ev.stopPropagation();
+            e.stopPropagation();
         },
         _hideList: function() { // 点击空白处关闭下拉框
             this.$containerList.style.display = 'none';
@@ -178,6 +200,7 @@
             if (this.callback) {
                 this.callback(this.selectItem);
             }
+            return this;
         },
         _initStyle: function(key) { // 设置样式
             var $liList = this.$list.getElementsByTagName('li');
@@ -195,6 +218,7 @@
                     }
                 }
             })
+            return this;
         }
      }
 
