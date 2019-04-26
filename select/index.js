@@ -3,6 +3,9 @@
  * 2.确定下拉数据
  * 3.确定默认选中的值
  * 4.返回选中的值
+ * new Selector({defaultsText: '2', list: [{key: key, value: value}],search: true, callback: function(item) {
+                    console.log(item);
+                }});
  */
 
  ;(function(undefined) {
@@ -209,4 +212,3 @@
      }
 
  })();
-
