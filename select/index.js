@@ -65,12 +65,12 @@
                         value: '数据8'
                     }
                 ],
-                container: 'select_container',
+                containerId: 'select_container',
                 search: false, // 是否支持搜索
                 callback: null
             };
             var opt = extend(defaults, options, true);
-            this.container = document.getElementById(opt.container);
+            this.container = document.getElementById(opt.containerId);
             this.defaultsText = opt.defaultsText;
             this.list = [].concat(opt.list);
             this.showFlag = false; // 是否显示下拉框的标志

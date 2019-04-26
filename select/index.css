@@ -36,7 +36,9 @@ input, textarea {
   position: absolute;
   left: 0;
   top: 46px;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  z-index: 100;
+  background: #fff; }
 
 .selector-search {
   padding: 10px; }
