@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>下拉框</title>
+        <link rel="stylesheet" type="text/css" href="index.css" />
+    </head>
+    <body>
+        <div class="select-container" id="select_container"></div>
+        <script src="./index.js"></script>
+        <script>
+            window.onload = function() {
+                new Selector({defaultsText: '2', search: true, callback: function(item) {
+                    console.log(item);
+                }});
+            }
+        </script>
+    </body>
+</html>
