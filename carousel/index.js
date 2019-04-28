@@ -27,6 +27,7 @@
                 direction: 'horizontal', // 默认水平， 垂直vertical
                 autoPlay: 3000,
                 initIndex: 0, // 默认初始化显示的
+                callback: null
             };
             var opt = extend(defaults, options, true);
             this.$container = null;
@@ -47,6 +48,7 @@
                 this.slideWidth = width;
                 this.slideHeight = height;
                 this.timer = null;
+                this.callback = opt.callback;
                 if (opt.showPoint) {
                     this._initPoint();
                 }
@@ -101,6 +103,7 @@
                     item.className = item.className.replace(/\sactive/g, '');
                 }
             })
+            return this;
         },
         _play: function() { // 动画运行
             var $slide = this.$wrapper.getElementsByClassName('carousel-slide');
@@ -114,7 +117,11 @@
                 var translateY = Number.parseInt(this.slideHeight) * this.index;
                 this.$wrapper.style.transform = 'translate3d(0, -'+translateY +'px, 0)';
             }
+            if (this.callback) {
+                this.callback(this.index);
+            }
             this._initPointStyle();
+            return this;
         },
         _autoPlay: function() {
             var __this = this;
@@ -122,11 +129,15 @@
                 __this.index += 1;
                 __this._play();
             }, this.autoPlay);
+            return this;
         },
         _bindEvent: function() { // 左右按钮添加事件
             var __this = this;
             var $prev = this.$container.getElementsByClassName('carousel-button-prev')[0];
             var $next = this.$container.getElementsByClassName('carousel-button-next')[0];
+            if (!$prev || !$next) {
+                return false
+            }
             $prev.onclick = function(ev) {
                 __this.index -= 1;
                 __this._initPlay();
@@ -136,6 +147,7 @@
                 __this.index += 1;
                 __this._initPlay();
             }
+            return this;
         },
         _initPlay: function() {
             clearInterval(this.timer);
@@ -143,6 +155,7 @@
             if (this.autoPlay) {
                 this._autoPlay();
             }
+            return this;
         }
     }
     _global = (function() {

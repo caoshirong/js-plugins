@@ -5,7 +5,7 @@
         <link rel="stylesheet" type="text/css" href="index.css" />
     </head>
     <body>
-        <div class="carousel-container">
+        <div class="carousel-container carousel-container1">
             <div class="carousel-wrapper">
                 <div class="carousel-slide" style="background: red">carousel 1</div>
                 <div class="carousel-slide" style="background: gray">carousel 2</div>
@@ -14,13 +14,25 @@
             <div class="carousel-button-prev"></div>
             <div class="carousel-button-next"></div>
         </div>
+
+        <div class="carousel-container" id="carousel-container">
+            <div class="carousel-wrapper">
+                <div class="carousel-slide" style="background: red">carousel 1</div>
+                <div class="carousel-slide" style="background: gray">carousel 2</div>
+                <div class="carousel-slide" style="background: green">carousel 3</div>
+            </div>
+        </div>
         <script src="./index.js"></script>
         <script>
             window.onload = function() {
                 new Carousel({
-                    container: '.carousel-container',
+                    container: '.carousel-container1',
+                })
+
+                new Carousel({
+                    container: '#carousel-container',
                     initIndex: 2,
-                    // direction: 'vertical'
+                    direction: 'vertical'
                 })
             }
         </script>
