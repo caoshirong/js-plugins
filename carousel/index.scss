@@ -1,1 +1,112 @@
 @import '../base.scss';
+
+.carousel-container {
+    width: 100%;
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+    z-index: 10;
+    .carousel-wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        box-sizing: border-box;
+        transition-property: transform,-webkit-transform;
+        transition: all .5s;
+        .carousel-slide {
+            flex-shrink: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            position: relative;
+            transition-property: transform,-webkit-transform;
+        }
+    }
+    &.carousel-container-vertical {
+        .carousel-point-wrapper {
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            .carousel-point {
+                display: block;
+            }
+        }
+        .carousel-wrapper {
+            flex-direction: column;
+        }
+    }
+    &.carousel-container-horizontal {
+        .carousel-point-wrapper {
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+    .carousel-point-wrapper {
+        position: absolute;
+        .carousel-point {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin: 5px;
+            background-color: $primary-color;
+            cursor: pointer;
+            &.active {
+                background-color: $active-color;
+            }
+        }
+    }
+    .carousel-button-prev, .carousel-button-next {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 1px solid $active-color;
+        background-color: transparent;
+        cursor: pointer;
+        &::before {
+            position: absolute;
+            content: '';
+            width: 0;
+            height: 0;
+        }
+        
+    }
+    .carousel-button-prev {
+        left: 30px;
+        &::before {
+            left: 8px;
+            top: 14px;
+            border-top: 10px transparent dashed;
+            border-left: 10px transparent dashed;
+            border-right: 10px $active-color dashed;
+            border-bottom: 10px transparent solid;
+        }
+        &:hover {
+            background-color: $active-color;
+            &::before{
+                border-right: 10px #fff dashed;
+            }
+        }
+    }
+    .carousel-button-next {
+        right: 30px;
+        &::before {
+            left: 24px;
+            top: 14px;
+            border-top: 10px transparent dashed;
+            border-left: 10px $active-color dashed;
+            border-right: 10px transparent dashed;
+            border-bottom: 10px transparent solid;
+        }
+        &:hover {
+            background-color: $active-color;
+            &::before{
+                border-left: 10px #fff dashed;
+            }
+        }
+    }
+}

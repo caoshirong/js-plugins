@@ -6,7 +6,7 @@
     </head>
     <body>
         <div class="select-container" id="select_container"></div>
-        <div class="select-container" id="select_container1"></div>
+        <div class="select-container1" id="select_container1"></div>
         <script src="./index.js"></script>
         <script>
             window.onload = function() {
@@ -14,7 +14,7 @@
                     console.log(item);
                 }});
 
-                new Selector({containerId: 'select_container1', defaultsText: '1', search: true, callback: function(item) {
+                new Selector({container: '#select-container1', defaultsText: '1', search: true, callback: function(item) {
                     console.log(item);
                 }});
             }

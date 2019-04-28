@@ -65,32 +65,44 @@
                         value: '数据8'
                     }
                 ],
-                containerId: 'select_container',
+                container: '#select_container',
                 search: false, // 是否支持搜索
                 callback: null
             };
             var opt = extend(defaults, options, true);
-            this.container = document.getElementById(opt.containerId);
+            this.container = null;
+            var mark = opt.container.split('')[0];
+            if (mark === '#') {
+                this.container = document.getElementById(opt.container.replace(/^#/, ''));
+            } else if (mark === '.') {
+                console.log(opt.container.replace(/^./, ''));
+                this.container = document.getElementsByClassName(opt.container.replace(/^./, ''))[0]
+            }
             this.defaultsText = opt.defaultsText;
             this.list = [].concat(opt.list);
             this.showFlag = false; // 是否显示下拉框的标志
             this.callback = opt.callback;
             this.search = opt.search;
             this.filterList = [].concat(opt.list);
-            this._initInput()._initList();
-            document.addEventListener('click', function() {
-                __this._hideList();
-            }, false)
-            this.container.onkeyup = function(ev) {
-                var e = ev || window.event;
-                var key = e.keyCode || e.which;
-                if (key === '38') { // 向上
-                    console.log('向上');
+            if (this.container) {
+                this._initInput()._initList();
+                document.addEventListener('click', function() {
+                    __this._hideList();
+                }, false)
+                this.container.onkeyup = function(ev) {
+                    var e = ev || window.event;
+                    var key = e.keyCode || e.which;
+                    if (key === '38') { // 向上
+                        console.log('向上');
+                    }
+                    if (key === '40') {
+                        console.log('向下');
+                    }
+                    __this._initStyle()
                 }
-                if (key === '40') {
-                    console.log('向下');
-                }
-                __this._initStyle()
+            } else {
+                console.log('容器不存在');
+                return false;
             }
             return this;
         },
