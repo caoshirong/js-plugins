@@ -7,16 +7,31 @@
     <body>
         <div class="select-container" id="select_container"></div>
         <div class="select-container1" id="select_container1"></div>
+        <button id="show_btn">显示第一个</button>
         <script src="./index.js"></script>
         <script>
             window.onload = function() {
-                new Selector({defaultsText: '2', search: true, callback: function(item) {
+                function Sub(say) { // 继承
+                    this.say = say;
+                    // Selector.call(this, options)
+                }
+                Sub.prototype = new Selector();
+                Sub.prototype.consoleLog = function() {
+                    console.log(this.say);
+                }
+                var $el = document.getElementById('show_btn');
+                var a1 = new Sub('你说啥', {defaultsText: '2', search: true, callback: function(item) {
                     console.log(item);
                 }});
+                
 
-                new Selector({container: '#select-container1', defaultsText: '1', search: true, callback: function(item) {
+                new Selector({container: '#select_container1', defaultsText: '1', search: true, callback: function(item) {
                     console.log(item);
                 }});
+                $el.onclick = function show(ev) {
+                    a1.consoleLog();
+                    a1._show(ev);
+                }
             }
         </script>
     </body>

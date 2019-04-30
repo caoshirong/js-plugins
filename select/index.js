@@ -65,7 +65,7 @@
                         value: '数据8'
                     }
                 ],
-                container: '#select_container',
+                container: '.select-container',
                 search: false, // 是否支持搜索
                 callback: null
             };
@@ -75,7 +75,6 @@
             if (mark === '#') {
                 this.container = document.getElementById(opt.container.replace(/^#/, ''));
             } else if (mark === '.') {
-                console.log(opt.container.replace(/^./, ''));
                 this.container = document.getElementsByClassName(opt.container.replace(/^./, ''))[0]
             }
             this.defaultsText = opt.defaultsText;
@@ -87,7 +86,7 @@
             if (this.container) {
                 this._initInput()._initList();
                 document.addEventListener('click', function() {
-                    __this._hideList();
+                    __this._hide();
                 }, false)
                 this.container.onkeyup = function(ev) {
                     var e = ev || window.event;
@@ -197,9 +196,17 @@
             this.showFlag = !this.showFlag;
             e.stopPropagation();
         },
-        _hideList: function() { // 点击空白处关闭下拉框
+        _hide: function() { // 点击空白处关闭下拉框
             this.$containerList.style.display = 'none';
             this.showFlag = false;
+        },
+        _show: function(ev) { // 显示下拉框
+            this.$containerList.style.display = 'block';
+            this.showFlag = true;
+            if (ev) {
+                ev.stopPropagation();
+            }
+            return this;
         },
         _choose: function(ev) { // 选择某项内容
             var __data = ev.dataset;
@@ -212,6 +219,7 @@
             if (this.callback) {
                 this.callback(this.selectItem);
             }
+            this._hide();
             return this;
         },
         _initStyle: function(key) { // 设置样式
