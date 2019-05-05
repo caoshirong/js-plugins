@@ -210,7 +210,7 @@
             }
             this.$dateMain.onclick = function(ev) { // 日期点击事件
                 let target = ev.target;
-                if (target.tagName.toUpperCase() === 'SPAN') {
+                if (target.parentNode.getAttribute('class').indexOf('disabled') === -1 && target.tagName.toUpperCase() === 'SPAN') {
                     let { date } = target.parentNode.dataset;
                     _this.hide();
                     _this._initStyle(date);
@@ -227,7 +227,7 @@
                 var __class = item.getAttribute('class');
                 item.className = __class.replace('active', '');
                 if (itemKey === date) {
-                    if (__class.indexOf('active') === -1) item.className = __class + 'active';
+                    if (__class.indexOf('active') === -1) item.className = __class + ' active';
                 }
             })
             return this;
