@@ -6,12 +6,23 @@
     </head>
     <body>
         <div id="datePicker"></div>
+        <button id="hide">关闭</button>
+        <button id="show">显示</button>
         <script src="index.js"></script>
         <script>
             window.onload = function() {
-                new DatePicker('#datePicker', {
-                    
+                var a1 = new DatePicker('', {
+                    show: true,
+                    callback: function(ev) {
+                        console.log(ev);
+                    }
                 })
+                document.getElementById('hide').onclick = function () {
+                    a1.hide();
+                }
+                document.getElementById('show').onclick = function () {
+                    a1.show();
+                }
             }
         </script>
     </body>

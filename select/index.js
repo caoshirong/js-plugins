@@ -233,7 +233,6 @@
                     if (__class.indexOf('active') !== -1) {
                         var __index = __class.split(' ').indexOf('active');
                         var __classArr = __class.split(' ');
-                        var __className = __classArr.splice(__index, 1);
                         item.className = __classArr.join(' ');
                     }
                 }

@@ -90,22 +90,45 @@
     }
 }
 
-.r-date-week{
-    overflow: hidden;
-    border-bottom: 1px solid #dcdfe6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    li {
-        flex: 0 0 30px;
-        width: 30px;
-        height: 30px;
-        line-height: 30px;
-        flex: 1;
+.r-date-body {
+    width: 100%;
+    th{
+        height: 50px;
+        line-height: 50px;
         text-align: center;
     }
-}
-
-.r-date-body {
-    
+    td {
+        padding: 10px;
+        span {
+            display: block;
+            margin: 0 auto;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+        }
+        &:hover:not(.disabled), &.active:not(.disabled){
+            span {
+                cursor: pointer;
+                background: #00c286;  
+                color: #fff;              
+            }
+        }
+        &.today {
+            span {
+                cursor: pointer;
+                background: orange;  
+                color: #fff;              
+            }
+        }
+    }
+    thead {
+        th {
+            border-bottom: 1px solid #dcdfe6;
+        }
+    }
+    .disabled {
+        color: #999;
+    }
 }
