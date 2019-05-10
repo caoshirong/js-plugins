@@ -3,11 +3,18 @@
  * 1.初始化日历数据
  * 2.创建日历元素
  * 3.添加点击日历切换事件
- * 4.
  * */ 
 ;(function(undefined){
     "use strict"
     var _global;
+    /**
+     *
+     *
+     * @param {Object} o 原始对象
+     * @param {Object} n 需要合并对象
+     * @param {Boolean} flag flag 为true时覆盖原始对象
+     * @returns 合并后的对象
+     */
     function extend(o, n, flag) {
         for (var key in n) {
             if (n.hasOwnProperty(key) && (!o.hasOwnProperty(key) || flag)) {
@@ -16,9 +23,12 @@
         }
         return o;
     }
-    function formateData(date) {
-        // var d = 
-    }
+    /**
+     *
+     *
+     * @param {String} date 格式为时间字符串
+     * @returns 格式化后的对象
+     */
     function splitDate (date) {
         let _date = new Date(date.replace(/-/g, '/'));
         let y = _date.getFullYear();
@@ -27,17 +37,31 @@
         let w = _date.getDay();
         return {y, m, d, w}
     }
+    /**
+     *
+     *
+     * @param {String} date 格式为时间字符串
+     * @returns 当前月的天数
+     */
     function getDays(date) {
         let {y, m} = splitDate(date);
         return new Date(y, m, 0).getDate(); // 当设置参数为0时返回上个月的最后一天，也就是天数，所以要获取当月的天数需要再获取的月份+1
     }
     function getFirstWeek(date) {
         let {y, m} = splitDate(date);
-        return new Date(`${y}/${m}/1`).getDay();
+        return new Date(`${y}/${m}/1`).getDay(); // 返回某个月的第一天为周几
     }
     function fixZero(num) {
         return num < 10 ? '0' + num : num;
     }
+    /**
+     *
+     *
+     * @param {String} date 格式为时间字符串
+     * @param {Number} interval 间隔的时间数
+     * @param {string} [type='month'] 间隔时间的类型默认为month, 可选值有month, year
+     * @returns
+     */
     function getDate(date, interval, type= 'month') {
         let { y, m} = splitDate(date);
         switch(type) {
@@ -83,9 +107,11 @@
         constructor: this,
         _init: function(options) {
             const defaults = {
-                defaultDate: '',
-                callback: null,
-                show: false
+                defaultDate: '', // 默认日期
+                callback: null, // 选择后的回调函数
+                show: false, // 是否自动显示
+                range: false, // 是否支持选择范围
+                multiple: false, // 是否支持多选 
             }
             let opt = extend(defaults, options, true); 
             if (opt.defaultDate) {
