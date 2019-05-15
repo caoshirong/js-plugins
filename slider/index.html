@@ -5,14 +5,15 @@
         <link rel="stylesheet" href="./index.css" />
     </head>
     <body>
-        <div id='slider' style="margin: 40px;width: 500px;"></div>
+        <div id='slider' style="margin: 40px;"></div>
         <script src='./index.js'></script>
         <script>
             window.onload = function() {
                 new Slider('#slider',{
-                    value: [10, 50],
-                    max: 300,
-                    step: 3,
+                    value: [100, 200],
+                    max: 1000,
+                    min: 100,
+                    step: 0.5,
                     range: true,
                     callback(value) {
                         console.log(value);

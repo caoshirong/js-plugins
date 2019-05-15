@@ -31,6 +31,11 @@
         }else return  pos % step;
     }
 
+    function exportValue(nr, step){
+        const decimalCases = (String(step).split('.')[1] || '').length;
+        return Number(nr).toFixed(decimalCases)
+    }
+
     const DISABLED_SLIDE_NAME = 'c-slider-disabled';
 
     function Slider(el, options) {
@@ -69,12 +74,12 @@
             // 将所有数值转化为百分比存值方便计算运行的距离
             if (opt.range) {
                 this.value = (value[1] - value[0])/(max-min) * 100;
-                this.left = value[0]/(max-min) * 100;
+                this.left = (value[0]-min)/(max-min) * 100;
                 this.real = value;
             } else {
-                this.value = value/(max-min) * 100;
+                this.value = (value-min)/(max-min) * 100;
                 this.left = 0;
-                this.real = [0, value];
+                this.real = [min, value];
             }
             this.step = step;
             this._initDom();
@@ -86,7 +91,7 @@
             let html = `<div class="c-slider-bar"  style="width: ${this.value}%;left: ${this.left}%"></div><div class="c-slider-button-wrapper" data-value="${this.range ? this.real[0]: this.real[1]}" style="left: ${this.range ? this.left: this.value}%"><div class="c-slider-button"></div></div>` + (this.range ? `<div class="c-slider-button-wrapper" data-value="${this.real[1]}" style="left: ${this.left + this.value}%"><div class="c-slider-button"></div></div>`: '') + (this.tooltip ? `<div class="c-silder-tooltip"></div>` : '') ;
             this.$box.innerHTML = html;
             this.$container.appendChild(this.$box);
-            this.boxWidth = window.getComputedStyle(this.$box, null).width;
+            this.boxWidth = parseInt(window.getComputedStyle(this.$box, null).width, 10);
         },
         _bindEvent() {
             const _this = this;
@@ -101,35 +106,28 @@
         },
         _mouseMove(item, ev) { // 鼠标拖拽事件
             let _this = this;
+            const sliderOffsetLeft = this.$box.getBoundingClientRect().left;
             let endX = ev.clientX;
-            let startX = this.position.x;
-            let moudles = handleDecimal(endX, this.step); // 判断是否需要移动
-            let value = this.position.value;
-            this.prev = item.dataset.value;
+            let newPos = exportValue(((endX - sliderOffsetLeft) / this.boxWidth * (this.max-this.min)) + this.min, this.step);
+            let moudles = handleDecimal(newPos, this.step); // 判断是否需要移动
             if (moudles) return false;
-            let dis = this.step / (this.max - this.min) * parseFloat(this.boxWidth); // 移动的距离是该倍数时
-            let distance = Math.ceil((endX - startX) / dis) * dis; // 移动距离
-            let distancePer = Number.parseFloat(distance / parseFloat(this.boxWidth) * 100); // 移动百分比
-            let left = this.position.left;
-            let formatPer = distancePer;
-            let m = formatPer + Number.parseFloat(left) > 100 ? 100 : (formatPer + Number.parseFloat(left));
-                m = m < 0 ? 0 : m;
-            item.style.left = m + '%';
-            item.dataset.value = Number.parseFloat(Number.parseFloat(item.style.left) / 100 * _this.max);
-            let leftValue = [].map.call(this.$sliderButton, function(item, index) {
-                return Number.parseFloat(item.style.left);
+            newPos = newPos > this.max ? this.max : (newPos < this.min ? this.min : newPos);
+            item.dataset.value = newPos;
+            let regularNewPos = (newPos - this.min) / (this.max-this.min) * 100 ;
+            this.realVal = [].map.call(this.$sliderButton, function(item, index) {
+                return exportValue(item.dataset.value, _this.step);
             }).sort(sortNumber);
-            if (!this.range) leftValue.unshift(0);
-            let sliderBarWidth = leftValue[1] - leftValue[0];
-            this.$sliderBar.style.left = leftValue[0] + '%';
-            this.$sliderBar.style.width = sliderBarWidth + '%';
-            this.$sldierTooltip.style.left = item.style.left;
-            this.$sldierTooltip.innerText = Number.parseInt(Number.parseFloat(item.style.left) / 100 * _this.max);
-            this.realVal = leftValue.map(function(item, index) {
-                return Number.parseInt(item / 100 * _this.max);
+            if (!this.range) this.realVal.unshift(this.min);
+            let positionValue = this.realVal.map(function(item, index) {
+                return (item - _this.min)/(_this.max - _this.min) * 100
             })
+            let sliderBarWidth = positionValue[1] - positionValue[0];
+            this.$sliderBar.style.width = sliderBarWidth + '%';
+            this.$sliderBar.style.left = positionValue[0] + '%';
+            this.$sldierTooltip.innerText = newPos;
+            this.$sldierTooltip.style.left = regularNewPos + '%';
             this.$sldierTooltip.style.display = 'block';
-            // this.position.x = endX;
+            item.style.left = regularNewPos + '%';
         },
         _mouseDown(item, ev) { // 鼠标按下事件
             const _this = this;
