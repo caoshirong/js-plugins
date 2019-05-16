@@ -105,6 +105,7 @@
             });
         },
         _mouseMove(item, ev) { // 鼠标拖拽事件
+            this.$sldierTooltip.style.display = 'block';
             let _this = this;
             const sliderOffsetLeft = this.$box.getBoundingClientRect().left;
             let endX = ev.clientX;
@@ -126,7 +127,6 @@
             this.$sliderBar.style.left = positionValue[0] + '%';
             this.$sldierTooltip.innerText = newPos;
             this.$sldierTooltip.style.left = regularNewPos + '%';
-            this.$sldierTooltip.style.display = 'block';
             item.style.left = regularNewPos + '%';
         },
         _mouseDown(item, ev) { // 鼠标按下事件
