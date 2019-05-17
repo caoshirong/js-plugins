@@ -107,26 +107,82 @@
         constructor: this,
         _init: function(options) {
             const defaults = {
-                defaultDate: '', // 默认日期
+                defaultDate: date, // 默认日期
                 callback: null, // 选择后的回调函数
+                autoClose: false, // 是否自动关闭
                 show: false, // 是否自动显示
-                range: false, // 是否支持选择范围
-                multiple: false, // 是否支持多选 
+                type: 'single', // 选择类型Sring, 可选值有 single(单选)， range(范围), multiple(多选)
+                disabledDate: [false, date], // 不可选的日期 [Array] 类型 [date, date] 限制中间日期 [false, false] 不限制 [true, date] [date, false]// 限制当前日期之前 [date, true] [false, date]// 限制之后的日期
             }
             let opt = extend(defaults, options, true); 
             if (opt.defaultDate) {
                 date = opt.defaultDate;
             }
+            this.disabledDate = opt.disabledDate;
+            this.type = opt.type;
+            this.autoClose = opt.autoClose;
             this.callback = opt.callback;
+            this._disabledType();
             this._initDom();
             this._initData(date);
             this._bindEvent();
+            this.value = [];
             if (opt.show) {
                 this.show();
             } else {
                 this.hide();
             }
             return this;
+        },
+        _disabledType: function () { // 判断是那种不可选的类型
+            var date = this.disabledDate;
+            var firstType = typeof date[0];
+            var secondType = typeof date[1];
+            var disabled = '';
+            var type = '';
+            if (firstType ==='boolean' && date[0] && secondType === 'string' && date[1]) { // 限制之前的日期
+                disabled = date[1];
+                type = 'before';
+            } else if ( firstType ==='string' && date[0] && secondType === 'Bollean' && !date[1]) { // 限制之前的日期
+                disabled = date[0];
+                type = 'before';
+            }else if (firstType ==='boolean' && !date[0] && secondType === 'string' && date[1]) { // 限制之前的日期
+                disabled = date[1];
+                type = 'after';
+            }else if ( firstType ==='string' && date[0] && secondType === 'Bollean' && date[1]) { // 限制之前的日期
+                disabled = date[0];
+                type = 'after';
+            }else if (firstType ==='boolean'  && date[0] && secondType === 'boolean' && date[1]) { // 全部限制
+                disabled = 'true';
+                type = 'true';
+            }else if (firstType ==='string'  && date[0] && secondType === 'string' && date[1]) { // 全部限制
+                disabled = date[0];
+                type = date[1];
+            }else {
+                disabled = 'false';
+                type = 'false';
+            }
+            this.disabledType = {disabled, type}
+        },
+        _checkDisabled: function (date) {
+            let res = this.disabledType;
+            if (res.type === 'before') {
+                if (new Date(date).getTime() < new Date(res.disabled).getTime()) {
+                    return true
+                }
+            } else if (res.type === 'after') {
+                if (new Date(date).getTime() > new Date(res.disabled).getTime()) {
+                    return true
+                }
+            } else if (res.type === 'true') {
+                return true
+            } else if (res.type === 'false') {
+                return false
+            } else {
+                if (new Date(date).getTime() > new Date(res.disabled).getTime() && new Date(date).getTime() < new Date(res.type).getTime()) {
+                    return true
+                }
+            }
         },
         _initDom: function () {
             this.$dateContainer = document.createElement('div');
@@ -186,15 +242,17 @@
                     data.push(`${nextY}-${fixZero(nextM)}-${fixZero(i - firstWeek - days + 2)}`)
                 }
             }
+            this.data = data; // 日期数据
             this._initDate(data, firstWeek -1, firstWeek + days - 1);
             return this;
         },
         _initDate (data, min, max) {
             let _html = '';
+            let disabled = false;
             for (let i = 1; i <= data.length / 7; i++) {
                 _html += '<tr>';
                 for (let j = 0; j < 7; j ++) {
-                    let _class = (i-1)*7 + j < min || (i-1)*7 + j >= max ? 'disabled' : (data[(i-1)*7 + j] === date ? 'today': '');
+                    let _class = (i-1)*7 + j < min || (i-1)*7 + j >= max || this._checkDisabled(data[(i-1)*7 + j])? 'disabled' : (data[(i-1)*7 + j] === date ? 'today': '');
                     _html += `<td data-date=${data[(i-1)*7 + j]} class=${_class}>
                     <span>${fixZero(splitDate(data[(i-1)*7 + j]).d)}</span></td>`
                 }
@@ -236,24 +294,83 @@
             }
             this.$dateMain.onclick = function(ev) { // 日期点击事件
                 let target = ev.target;
-                if (target.parentNode.getAttribute('class').indexOf('disabled') === -1 && target.tagName.toUpperCase() === 'SPAN') {
+                if ( target.tagName.toUpperCase() === 'SPAN' && target.parentNode.getAttribute('class').indexOf('disabled') === -1) {
                     let { date } = target.parentNode.dataset;
-                    _this.hide();
-                    _this._initStyle(date);
-                    if (_this.callback) {
-                        _this.callback(date);
+                    if (_this.autoClose) {
+                        _this.hide();
                     }
+                    _this._selected(date); // 选中数据
+                    _this._initStyle();
                 }
             }
         },
-        _initStyle (date) {
+        _selected (date) {
+            const _this = this;
+            switch (_this.type) {
+                case "multiple": 
+                    if (_this.value.indexOf(date) === -1) { 
+                        _this.value.push(date);
+                    } else {
+                        _this.value.splice(_this.value.indexOf(date), 1);
+                    }
+                    break;
+                case "range":
+                    if (_this.value.length >= 2) {
+                        _this.value = [date]
+                    } else {
+                        _this.value.push(date);
+                    }
+                    break;
+                default:
+                    _this.value = [date];
+                    break;
+            }
+            _this.value.sort(function(a, b) {
+                return new Date(a).getTime() - new Date(b).getTime()
+            });
+            if (_this.type === 'range') {
+                if (_this.value.length == 2 && new Date(_this.value[0]).getTime() !== new Date(_this.value[1]).getTime()) {
+                    let value = _this.data.filter(function(item, index){
+                        return new Date(item).getTime() >= new Date(_this.value[0]).getTime() && new Date(item).getTime() <= new Date(_this.value[1]).getTime()
+                    })
+                    _this.value = value;
+                }
+            }
+            if (_this.callback) {
+                _this.callback(_this.value.join(','));
+            }
+        },
+        _initStyle () {
+            let _this = this;
             var $item = this.$dateMain.getElementsByTagName('td');
             [].forEach.call($item, function(item, index) {
                 var itemKey = item.dataset.date;
                 var __class = item.getAttribute('class');
-                item.className = __class.replace('active', '');
-                if (itemKey === date) {
-                    if (__class.indexOf('active') === -1) item.className = __class + ' active';
+                switch(_this.type) {
+                    case "multiple":
+                        if (_this.value.indexOf(itemKey) !== -1) {
+                            item.className = __class + ' active'
+                        } else {
+                            item.className = __class.replace('active', '');
+                        }
+                        break;
+                    case "range":
+                        if (_this.value.indexOf(itemKey) !== -1) {
+                            if (__class.indexOf('active') === -1) item.className = __class + ' active';
+                        } else {
+                            item.className = __class.replace('active', '');
+                        }
+                        if (_this.value.length === 2) {
+
+                        }
+                        break;
+                    default:
+                        if (_this.value.indexOf(itemKey) !== -1) {
+                            if (__class.indexOf('active') === -1) item.className = __class + ' active';
+                        } else {
+                            item.className = __class.replace('active', '');
+                        }
+                        break;
                 }
             })
             return this;

@@ -12,7 +12,9 @@
         <script>
             window.onload = function() {
                 var a1 = new DatePicker('', {
+                    // disabledDate: [false, '2019-05-25'],
                     show: true,
+                    type: 'range',
                     callback: function(ev) {
                         console.log(ev);
                     }
