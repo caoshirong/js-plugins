@@ -6,19 +6,34 @@
     </head>
     <body>
         <div id="datePicker"></div>
+        <div id="datePicker1"></div>
+        <div id="datePicker2"></div>
         <button id="hide">关闭</button>
         <button id="show">显示</button>
         <script src="index.js"></script>
         <script>
             window.onload = function() {
                 var a1 = new DatePicker('', {
-                    // disabledDate: [false, '2019-05-25'],
+                    disabledDate: ['2019-05-21', false],
                     show: true,
                     type: 'range',
                     callback: function(ev) {
                         console.log(ev);
                     }
                 })
+                /* new DatePicker('', {
+                    show: true,
+                    type: 'multiple',
+                    callback: function(ev) {
+                        console.log(ev);
+                    }
+                })
+                new DatePicker('', {
+                    show: true,
+                    callback: function(ev) {
+                        console.log(ev);
+                    }
+                }) */
                 document.getElementById('hide').onclick = function () {
                     a1.hide();
                 }

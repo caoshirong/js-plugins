@@ -143,13 +143,13 @@
             if (firstType ==='boolean' && date[0] && secondType === 'string' && date[1]) { // 限制之前的日期
                 disabled = date[1];
                 type = 'before';
-            } else if ( firstType ==='string' && date[0] && secondType === 'Bollean' && !date[1]) { // 限制之前的日期
+            } else if ( firstType ==='string' && date[0] && secondType === 'boolean' && !date[1]) { // 限制之前的日期
                 disabled = date[0];
                 type = 'before';
             }else if (firstType ==='boolean' && !date[0] && secondType === 'string' && date[1]) { // 限制之前的日期
                 disabled = date[1];
                 type = 'after';
-            }else if ( firstType ==='string' && date[0] && secondType === 'Bollean' && date[1]) { // 限制之前的日期
+            }else if ( firstType ==='string' && date[0] && secondType === 'boolean' && date[1]) { // 限制之前的日期
                 disabled = date[0];
                 type = 'after';
             }else if (firstType ==='boolean'  && date[0] && secondType === 'boolean' && date[1]) { // 全部限制
@@ -163,6 +163,7 @@
                 type = 'false';
             }
             this.disabledType = {disabled, type}
+            console.log(this.disabledType)
         },
         _checkDisabled: function (date) {
             let res = this.disabledType;
